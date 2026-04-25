@@ -1,0 +1,129 @@
+/* Split Layout for Employee Login */
+.split-login-page {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background-color: #ffffff;
+}
+
+.split-login-right {
+  /* Use the existing background image */
+  background-image: url('/images/backg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: right;
+  padding: 3rem;
+  height: 100vh;
+}
+
+.split-login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+.split-login-right-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 650px;
+}
+
+.split-login-left {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.split-login-form-container {
+  width: 100%;
+  max-width: 380px;
+}
+
+.split-login-title {
+  color: #016A74; 
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.split-login-subtitle {
+  color: #8fa0b0;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+
+/* Custom Input Styling matching the image */
+.split-input {
+  background-color: #eaf1fa !important; /* Light blue background */
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 0.8rem 1rem !important;
+  height: auto !important;
+  font-weight: 500;
+  color: #333;
+}
+
+.split-input:focus {
+  box-shadow: 0 0 0 2px rgba(1, 106, 116, 0.25) !important;
+  background-color: #eaf1fa !important;
+}
+
+.split-input::placeholder {
+  color: #9ab !important;
+  font-size: 0.9rem;
+}
+
+.split-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.btn-split-login {
+  background-color: #016A74;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.8rem;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.btn-split-login:hover {
+  background-color: #014f56;
+  transform: translateY(-1px);
+}
+
+.btn-split-login:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Custom Checkbox adjustments */
+.custom-checkbox .form-check-input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+.custom-checkbox .form-check-input:checked {
+  background-color: #016A74;
+  border-color: #016A74;
+}

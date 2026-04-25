@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+
+node_modules/
+vendor/
+dist/
+build/
+
+.git-backup-*/
+.DS_Store
+*.log
+*.sqlite
+*.tsbuildinfo
+temp_*.txt

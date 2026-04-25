@@ -1,0 +1,93 @@
+name: Deploy Laravel (Development)
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: develop-deploy
+  cancel-in-progress: true
+
+env:
+  PHP_VERSION: "8.3"
+  DEPLOY_SOURCE: "."
+  REMOTE_PATH: "/home/u124590577/domains/palegoldenrod-hamster-512838.hostingersite.com/public_html"
+
+jobs:
+  deploy:
+    name: Sync and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, json, tokenizer, bcmath, pdo, mysql
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ env.PHP_VERSION }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ env.PHP_VERSION }}-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction -o
+
+      - name: Synchronize files to server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_PRIVATE_KEY }}
+          SOURCE: ${{ env.DEPLOY_SOURCE }}
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          REMOTE_PORT: ${{ secrets.VPS_PORT }}
+          TARGET: ${{ env.REMOTE_PATH }}
+
+      - name: Reset repository state on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ${{ env.REMOTE_PATH }}
+            if [ -d .git ]; then
+              git reset --hard
+              git clean -fd
+            else
+              echo "No git repository detected at ${{ env.REMOTE_PATH }}, skipping reset."
+            fi
+
+      - name: Run remote artisan commands
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd ${{ env.REMOTE_PATH }}
+            php -v
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache || true
+            php artisan migrate --force
+            php artisan optimize

@@ -1,0 +1,11 @@
+{
+    "name": "EmployeeManagementModule",
+    "alias": "employee-management-module",
+    "description": "Employee Management Module",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\EmployeeManagementModule\\Providers\\EmployeeManagementModuleServiceProvider"
+    ],
+    "files": []
+}

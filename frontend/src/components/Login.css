@@ -1,0 +1,108 @@
+/* Split Layout for Admin Login */
+.split-admin-login-page {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  background-color: #ffffff;
+}
+
+.split-admin-login-right {
+  background-image: url('/images/backimg.png');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: right;
+  padding: 3rem;
+  height: 100vh;
+}
+
+.split-admin-login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 41, 73, 0.7); /* Admin theme blue overlay */
+  z-index: 1;
+}
+
+.split-admin-login-right-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 650px;
+}
+
+.split-admin-login-left {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 2rem;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.split-admin-login-form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.split-admin-login-title {
+  color: #002F6C; /* Admin Primary Blue */
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.split-admin-login-subtitle {
+  color: #6c757d;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.admin-split-input {
+  background-color: #f0f7ff !important; /* Very light blue tint */
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 0.8rem 1rem !important;
+  height: auto !important;
+  font-weight: 500;
+  color: #333;
+}
+
+.admin-split-input:focus {
+  box-shadow: 0 0 0 2px rgba(0, 47, 108, 0.2) !important;
+  background-color: #f0f7ff !important;
+}
+
+.admin-split-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.btn-admin-login {
+  background-color: #002F6C;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.8rem;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.btn-admin-login:hover {
+  background-color: #001f46;
+  transform: translateY(-1px);
+}
+
+.btn-admin-login:disabled {
+  background-color: #6c757d;
+}

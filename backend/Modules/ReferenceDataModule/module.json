@@ -1,0 +1,11 @@
+{
+    "name": "ReferenceDataModule",
+    "alias": "reference-data-module",
+    "description": "Reference Data Module",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ReferenceDataModule\\Providers\\ReferenceDataModuleServiceProvider"
+    ],
+    "files": []
+}

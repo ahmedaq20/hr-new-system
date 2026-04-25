@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/employeedegree",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+    "laravel": {
+        "providers": [
+            "Modules\\EmployeeDegree\\Providers\\EmployeeDegreeServiceProvider",
+            "Modules\\EmployeeDegree\\Providers\\RouteServiceProvider"
+        ]
+    }
+},
+    "autoload": {
+        "psr-4": {
+            "Modules\\EmployeeDegree\\": "Modules/EmployeeDegree/app/",
+            "Modules\\EmployeeDegree\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\EmployeeDegree\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\EmployeeDegree\\Tests\\": "tests/"
+        }
+    }
+}

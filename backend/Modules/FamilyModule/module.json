@@ -1,0 +1,11 @@
+{
+    "name": "FamilyModule",
+    "alias": "family-module",
+    "description": "Family Management Module",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\FamilyModule\\Providers\\FamilyModuleServiceProvider"
+    ],
+    "files": []
+}

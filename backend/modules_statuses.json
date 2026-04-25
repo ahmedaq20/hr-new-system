@@ -1,0 +1,7 @@
+{
+    "CoreModule": true,
+    "EmployeeManagementModule": true,
+    "FamilyModule": true,
+    "ReferenceDataModule": true,
+    "EmployeeDegree": true
+}
