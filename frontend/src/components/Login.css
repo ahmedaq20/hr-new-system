@@ -1,108 +1,381 @@
-/* Split Layout for Admin Login */
-.split-admin-login-page {
-  height: 100vh;
+/* ============================================
+   Admin Login Page - Nexar HR System
+   Split layout: Form (left) | Illustration (right)
+   ============================================ */
+
+/* --- Page Container --- */
+.admin-login-page {
+  min-height: 100vh;
   overflow: hidden;
   display: flex;
   background-color: #ffffff;
 }
 
-.split-admin-login-right {
-  background-image: url('/images/backimg.png');
-  background-size: cover;
-  background-position: center;
-  position: relative;
+/* --- Illustration Panel (Right Side in RTL) --- */
+.admin-login-illustration {
+  background: linear-gradient(160deg, #e8f2fd 0%, #d0e4f7 40%, #c4dbf3 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: white;
-  text-align: right;
-  padding: 3rem;
-  height: 100vh;
+  padding: 2.5rem 3rem;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
-.split-admin-login-overlay {
+/* decorative blurred circles */
+.admin-login-illustration::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  background: rgba(0, 41, 73, 0.7); /* Admin theme blue overlay */
-  z-index: 1;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(43, 125, 233, 0.08);
+  top: -60px;
+  left: -80px;
+  filter: blur(60px);
+  pointer-events: none;
 }
 
-.split-admin-login-right-content {
+.admin-login-illustration::after {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(43, 125, 233, 0.06);
+  bottom: -40px;
+  right: -60px;
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.illustration-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 650px;
+  max-width: 620px;
+  text-align: center;
 }
 
-.split-admin-login-left {
+.illustration-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a2a44;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.illustration-subtitle {
+  font-size: 1.05rem;
+  color: #4a6a8a;
+  margin-bottom: 1.8rem;
+  font-weight: 500;
+}
+
+/* --- Hero Image --- */
+.hero-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image {
+  max-width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(43, 125, 233, 0.1));
+}
+
+/* --- Form Panel (Left Side in RTL) --- */
+.admin-login-form-col {
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem 2rem;
-  height: 100vh;
+  padding: 2rem 2.5rem;
+  min-height: 100vh;
   overflow-y: auto;
 }
 
-.split-admin-login-form-container {
+.admin-login-form-wrapper {
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
 }
 
-.split-admin-login-title {
-  color: #002F6C; /* Admin Primary Blue */
+/* --- Logo --- */
+.login-logo {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.nexar-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nexar-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.nexar-text {
+  font-size: 28px;
   font-weight: 800;
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
+  color: #1a2a44;
+  line-height: 1;
 }
 
-.split-admin-login-subtitle {
-  color: #6c757d;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
+/* --- Welcome Section --- */
+.login-welcome {
+  margin-bottom: 1.2rem;
+  text-align: center;
 }
 
-.admin-split-input {
-  background-color: #f0f7ff !important; /* Very light blue tint */
-  border: none !important;
-  border-radius: 4px !important;
-  padding: 0.8rem 1rem !important;
-  height: auto !important;
+.welcome-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1a2a44;
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+
+.welcome-subtitle {
+  font-size: 0.92rem;
+  color: #6b7b8d;
+  margin-bottom: 0.15rem;
+  line-height: 1.6;
   font-weight: 500;
-  color: #333;
 }
 
-.admin-split-input:focus {
-  box-shadow: 0 0 0 2px rgba(0, 47, 108, 0.2) !important;
-  background-color: #f0f7ff !important;
+.welcome-subtitle-en {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 0;
+  font-weight: 400;
 }
 
-.admin-split-label {
+/* --- Form Labels --- */
+.form-field-label {
   font-weight: 700;
-  font-size: 0.95rem;
-  color: #222;
-  margin-bottom: 0.5rem;
+  font-size: 0.88rem;
+  color: #374151;
+  margin-bottom: 0.45rem;
   display: block;
 }
 
-.btn-admin-login {
-  background-color: #002F6C;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  font-weight: 600;
-  padding: 0.8rem;
-  transition: all 0.2s ease;
-  font-size: 1.1rem;
+/* --- Input with Icon Wrapper --- */
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.btn-admin-login:hover {
-  background-color: #001f46;
+.input-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 1.15rem;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.login-input {
+  background-color: #f0f5fb !important;
+  border: 1.5px solid #e2eaf3 !important;
+  border-radius: 10px !important;
+  padding: 0.75rem 1rem 0.75rem 2.8rem !important;
+  padding-right: 2.8rem !important;
+  height: auto !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #374151 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  direction: rtl;
+}
+
+.login-input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.login-input:focus {
+  border-color: #2b7de9 !important;
+  box-shadow: 0 0 0 3px rgba(43, 125, 233, 0.12) !important;
+  background-color: #ffffff !important;
+}
+
+/* --- Password Toggle --- */
+.password-toggle {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.15rem;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #2b7de9;
+}
+
+/* --- Remember / Forgot Row --- */
+.remember-forgot-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.4rem;
+  margin-top: 0.3rem;
+}
+
+.remember-check {
+  font-size: 0.85rem;
+  color: #6b7b8d;
+}
+
+.remember-check .form-check-input:checked {
+  background-color: #2b7de9;
+  border-color: #2b7de9;
+}
+
+.forgot-password-link {
+  font-size: 0.85rem;
+  color: #2b7de9;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+  color: #1a5fc4;
+  text-decoration: underline;
+}
+
+/* --- Login Button --- */
+.login-submit-btn {
+  background: linear-gradient(135deg, #3b8df0 0%, #2b7de9 50%, #1a6ad4 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  font-weight: 700;
+  font-size: 1.02rem;
+  padding: 0.78rem 1rem !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 14px rgba(43, 125, 233, 0.3);
+  letter-spacing: 0.02em;
+}
+
+.login-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2b7de9 0%, #1a6ad4 100%) !important;
+  box-shadow: 0 6px 20px rgba(43, 125, 233, 0.4) !important;
   transform: translateY(-1px);
 }
 
-.btn-admin-login:disabled {
-  background-color: #6c757d;
+.login-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(43, 125, 233, 0.25) !important;
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* --- Divider "أو" --- */
+.login-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.2rem 0;
+  gap: 0.8rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2eaf3;
+}
+
+.login-divider span {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* --- Microsoft Login Button --- */
+.microsoft-login-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #e2eaf3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.microsoft-login-btn:hover {
+  border-color: #2b7de9;
+  background: #f7faff;
+  box-shadow: 0 2px 10px rgba(43, 125, 233, 0.08);
+}
+
+.microsoft-logo {
+  flex-shrink: 0;
+}
+
+/* --- Copyright --- */
+.login-copyright {
+  text-align: center;
+  margin-top: 1.8rem;
+  font-size: 0.78rem;
+  color: #b0bec5;
+  font-weight: 400;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 991.98px) {
+  .admin-login-form-col {
+    padding: 2rem 1.5rem;
+    min-height: auto;
+  }
+
+  .admin-login-form-wrapper {
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .admin-login-form-col {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+  }
 }

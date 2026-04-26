@@ -13,6 +13,7 @@ function OfficialsOfAnotherGovernment() {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
@@ -28,41 +29,61 @@ function OfficialsOfAnotherGovernment() {
     return type?.id;
   }, [lookups]);
 
-  // Apply API-level filter using the dynamically resolved ID
-  const extraFilters = useMemo(() => {
-    if (!officialOtherId) return {};
-    return { filter_employment_type: officialOtherId };
-  }, [officialOtherId]);
+  // Combined filters logic
+  const combinedFilters = useMemo(() => {
+    const filters = { ...advancedFilters };
+
+    // Force the official in another government filter
+    if (officialOtherId) {
+      filters.filter_employment_type = officialOtherId;
+    }
+
+    return filters;
+  }, [advancedFilters, officialOtherId]);
 
   const { data, isLoading: isEmployeesLoading, isFetching } = useEmployees(
     page,
     pageSize,
     debouncedSearch,
-    extraFilters
+    combinedFilters
   );
 
   const isLoading = isLookupsLoading || (officialOtherId && isEmployeesLoading);
 
-  // Reset to page 1 when searching
+  // Reset to page 1 when search or advanced filters change
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, advancedFilters]);
+
+  // Handle advanced filter apply
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  // Handle advanced filter cancel
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  // Count active filters excluding base employee type
+  const activeFiltersCount = Object.keys(advancedFilters).length;
 
   return (
     <div className="animate-fade-in">
       <EmployeesHeader
         title="رسميين في حكومة أخرى"
-        desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"
+        desc="استعراض الموظفين الرسميين في منصات حكومية أخرى مع إمكانية البحث المتقدم"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        activeFiltersCount={activeFiltersCount}
       />
 
       <AdvancedFilters
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
       />
 
       <EmployeesFilters

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 
 import EmployeesHeader from "../components/EmployeesHeader";
@@ -15,6 +14,7 @@ function TemporaryEmploymentContracts() {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
@@ -27,10 +27,19 @@ function TemporaryEmploymentContracts() {
   // Fetch employees conditionally once we have both IDs resolved
   const shouldFetch = !!employmentTypeId && !!contractId;
 
-  const extraFilters = {
-    filter_employment_type: employmentTypeId,
-    filter_contract: contractId,
-  };
+  const extraFilters = useMemo(() => {
+    const filters = { ...advancedFilters };
+
+    // Force the base filters for this page
+    if (employmentTypeId) {
+      filters.filter_employment_type = employmentTypeId;
+    }
+    if (contractId) {
+      filters.filter_contract = contractId;
+    }
+
+    return filters;
+  }, [advancedFilters, employmentTypeId, contractId]);
 
   const { data: employeesData, isLoading: isLoadingEmployees } = useEmployees(
     page,
@@ -42,26 +51,40 @@ function TemporaryEmploymentContracts() {
 
   const loading = lookups.isLoading || isLoadingEmployees || !shouldFetch;
 
-  // Reset to page 1 when searching
+  // Reset to page 1 when searching or advanced filters change
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, advancedFilters]);
+
+  // Handle advanced filter apply
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  // Handle advanced filter cancel
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  // Count active filters excluding base contract filters
+  const activeFiltersCount = Object.keys(advancedFilters).length;
 
   return (
     <div className="animate-fade-in">
       <EmployeesHeader
         title="عقود تشغيل غير معلومة"
-        desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"
+        desc="استعراض موظفي عقود التشغيل غير المعلومة مع إمكانية البحث والتصفية المتقدمة"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        activeFiltersCount={activeFiltersCount}
       />
 
       <AdvancedFilters
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
       />
 
       <EmployeesFilters

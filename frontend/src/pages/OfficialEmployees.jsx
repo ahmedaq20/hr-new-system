@@ -1,19 +1,3 @@
-// import React from 'react'
-// import EmployeesHeader from '../components/EmployeesHeader';
-// import EmployeesFilters from '../components/EmployeesFilters';
-// import EmployeesTable from '../components/EmployeesTable';
-// function OfficialEmployees() {
-//   return (
-//     <div>
-//       <EmployeesHeader title="قاعدة بيانات الموظفين" desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"/>
-//       <EmployeesFilters/>       
-//       <EmployeesTable />
-//     </div>
-//   )
-// }
-
-// export default OfficialEmployees
-
 import { useState, useEffect, useMemo } from "react";
 import { useEmployees } from "../hooks/useEmployees";
 import { useLookups } from "../hooks/useLookups";
@@ -29,6 +13,7 @@ function OfficialEmployees() {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
@@ -44,43 +29,61 @@ function OfficialEmployees() {
     return officialType?.id;
   }, [lookups]);
 
-  // Apply API-level filter using the dynamically resolved ID
-  const extraFilters = useMemo(() => {
-    if (!officialStatusId) return {};
-    return { filter_employment_type: officialStatusId };
-  }, [officialStatusId]);
+  // Combine default page filter (official) with user selected advanced filters
+  const combinedFilters = useMemo(() => {
+    const filters = { ...advancedFilters };
+
+    // We force the employment type to be "Official" for this page
+    if (officialStatusId) {
+      filters.filter_employment_type = officialStatusId;
+    }
+
+    return filters;
+  }, [advancedFilters, officialStatusId]);
 
   const { data, isLoading: isEmployeesLoading, isFetching } = useEmployees(
     page,
     pageSize,
     debouncedSearch,
-    extraFilters
+    combinedFilters
   );
 
   const isLoading = isLookupsLoading || (officialStatusId && isEmployeesLoading);
 
-  // Reset to page 1 when searching
-
-  // Reset to page 1 when searching
+  // Reset to page 1 when search or advanced filters change
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, advancedFilters]);
+
+  // Handle advanced filter apply
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  // Handle advanced filter cancel
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  // Count active filters excluding the base "official" filter
+  const activeFiltersCount = Object.keys(advancedFilters).length;
 
   return (
     <div className="animate-fade-in">
       <EmployeesHeader
         title="الموظفين الرسميين"
-        desc="قائمة بالموظفين الرسميين (تصفية بصرية من النتائج الحالية)"
+        desc="قائمة بجميع الموظفين الرسميين مع إمكانية البحث والتصفية المتقدمة"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        activeFiltersCount={activeFiltersCount}
       />
 
       <AdvancedFilters
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
       />
 
       <EmployeesFilters

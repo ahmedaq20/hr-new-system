@@ -2,7 +2,7 @@ import { FaFilter, FaUserPlus } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { usePermissions } from "../hooks/usePermissions";
 
-function EmployeesHeader({ title = "عنوان افتراضي", desc = "وصف", onToggleFilters, onAdd }) {
+function EmployeesHeader({ title = "عنوان افتراضي", desc = "وصف", onToggleFilters, onAdd, activeFiltersCount = 0 }) {
   const { can } = usePermissions();
 
   return (
@@ -23,11 +23,19 @@ function EmployeesHeader({ title = "عنوان افتراضي", desc = "وصف",
 
           <div className="d-flex gap-2 justify-content-end align-items-center">
             <button
-              className="btn btn-modern-filter d-flex align-items-center gap-2 px-3 py-2"
+              className={`btn btn-modern-filter d-flex align-items-center gap-2 px-3 py-2${activeFiltersCount > 0 ? " btn-modern-filter--active" : ""}`}
               onClick={onToggleFilters}
             >
               <FaFilter size={14} />
               <span>الفلاتر المتقدمة</span>
+              {activeFiltersCount > 0 && (
+                <span
+                  className="badge rounded-pill text-white"
+                  style={{ background: "#002F6C", fontSize: "0.7rem", minWidth: "20px" }}
+                >
+                  {activeFiltersCount}
+                </span>
+              )}
             </button>
 
             {can.createEmployees && (
@@ -79,6 +87,11 @@ function EmployeesHeader({ title = "عنوان افتراضي", desc = "وصف",
           border-color: #002F6C;
           transform: translateY(-2px);
           box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-modern-filter--active {
+          background-color: rgba(0, 47, 108, 0.07) !important;
+          border-color: #002F6C !important;
+          font-weight: 600 !important;
         }
 
         .btn-modern-add {

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import EmployeesHeader from '../components/EmployeesHeader';
 import EmployeesFilters from '../components/EmployeesFilters';
-import AdvancedFilters from '../components/AdvancedFilters';
+import AdvancedFiltersTemp from '../components/AdvancedFiltersTemp';
 import TemporaryEmpTable from '../components/TemporaryEmpTable';
 import TempEmployeeModal from '../components/TempEmployeeModal';
 import { useTempContractEmployees } from '../hooks/useTempContractEmployees';
@@ -12,12 +12,37 @@ function TemporaryContrastEmployees() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
-  const { data, isLoading } = useTempContractEmployees({
-    filter_full_name: searchTerm,
-    page: page,
-    length: pageSize
-  });
+  // Merge search term with advanced filters
+  const combinedFilters = useMemo(() => {
+    return {
+      ...advancedFilters,
+      filter_full_name: searchTerm,
+      page: page,
+      length: pageSize
+    };
+  }, [searchTerm, advancedFilters, page, pageSize]);
+
+  const { data, isLoading, isFetching } = useTempContractEmployees(combinedFilters);
+
+  // Reset to page 1 when search or advanced filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, advancedFilters]);
+
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  const activeFiltersCount = Object.values(advancedFilters).filter(v => v !== "").length;
 
   return (
     <div className="animate-fade-in">
@@ -26,15 +51,14 @@ function TemporaryContrastEmployees() {
         desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
         onAdd={() => setShowAddModal(true)}
+        activeFiltersCount={activeFiltersCount}
       />
 
-      <AdvancedFilters
+      <AdvancedFiltersTemp
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
+        onHide={() => setShowAdvancedFilters(false)}
       />
 
       <EmployeesFilters
@@ -50,6 +74,7 @@ function TemporaryContrastEmployees() {
       <TemporaryEmpTable
         employees={data?.data || []}
         loading={isLoading}
+        isFetching={isFetching}
         totalCount={data?.recordsFiltered || 0}
         currentPage={page}
         pageSize={pageSize}

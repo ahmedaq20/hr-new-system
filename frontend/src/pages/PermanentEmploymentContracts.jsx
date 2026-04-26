@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { useEmployees } from "../hooks/useEmployees";
 import { useLookups } from "../hooks/useLookups";
@@ -13,13 +13,14 @@ function PermanentEmploymentContracts() {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   // 1. Fetch Lookups for dynamic IDs
   const { data: lookupsData, isLoading: lookupsLoading } = useLookups();
 
-  // 2. Resolve IDs dynamically based on slugs
+  // 2. Resolve IDs dynamically based on slugs and merge with advanced filters
   const filterParams = useMemo(() => {
     if (!lookupsData) return null;
 
@@ -33,45 +34,65 @@ function PermanentEmploymentContracts() {
       (type) => type.slug === "permanent"
     );
 
-    // Ensure we both valid IDs before fetching
+    // Ensure we have valid base IDs before fetching
     if (employmentTypeInfo?.id && contractStatusInfo?.id) {
-      return {
-        // The backend expects `filter_employment_type` and `filter_contract` parameters
-        filter_employment_type: employmentTypeInfo.id,
-        filter_contract: contractStatusInfo.id
-      };
+        const filters = { ...advancedFilters };
+        
+        // Force the base filters for this page
+        filters.filter_employment_type = employmentTypeInfo.id;
+        filters.filter_contract = contractStatusInfo.id;
+        
+        return filters;
     }
 
     return null;
-  }, [lookupsData]);
-
+  }, [lookupsData, advancedFilters]);
 
   // 3. Fetch Employees with the dynamic filters
   const { data, isLoading: employeesLoading, isError } = useEmployees(
     page,
     pageSize,
     debouncedSearch,
-    filterParams || {} // Pass empty object if IDs aren't ready to avoid hook error, but we'll conditionally ignore the data later
+    filterParams || {}
   );
 
   // Overall loading state
   const isLoading = lookupsLoading || (filterParams && employeesLoading);
 
+  // Reset to page 1 when search or advanced filters change
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, advancedFilters]);
+
+  // Handle advanced filter apply
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  // Handle advanced filter cancel
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  // Count active filters excluding base contract filters
+  const activeFiltersCount = Object.keys(advancedFilters).length;
+
   return (
     <div className="animate-fade-in">
       <EmployeesHeader
         title="عقود تشغيل دائمة"
-        desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"
+        desc="استعراض موظفي عقود التشغيل الدائمة مع إمكانية البحث والتصفية المتقدمة"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        activeFiltersCount={activeFiltersCount}
       />
 
       <AdvancedFilters
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
       />
 
       <EmployeesFilters

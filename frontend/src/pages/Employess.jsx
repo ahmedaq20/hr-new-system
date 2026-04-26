@@ -13,25 +13,42 @@ function Employees() {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({});
 
   const debouncedSearch = useDebounce(searchTerm, 500);
 
-  const { data, isLoading, isFetching, error } = useEmployees(page, pageSize, debouncedSearch);
+  const { data, isLoading, isFetching, error } = useEmployees(
+    page,
+    pageSize,
+    debouncedSearch,
+    advancedFilters
+  );
   const navigate = useNavigate();
 
-  // Reset to page 1 when searching
+  // Reset to page 1 when searching or filters change
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, advancedFilters]);
 
-  // Handle error (optional, logic from previous code)
   useEffect(() => {
     if (error) {
-      // Check for 401 in error object if axios interceptor propagates it
-      // navigate("/login"); 
+      // navigate("/login");
     }
   }, [error, navigate]);
 
+  const handleApplyFilters = (filters) => {
+    setAdvancedFilters(filters);
+    setPage(1);
+    setShowAdvancedFilters(false);
+  };
+
+  const handleCancelFilters = () => {
+    setAdvancedFilters({});
+    setShowAdvancedFilters(false);
+  };
+
+  // Count active advanced filters for badge on the button
+  const activeFiltersCount = Object.keys(advancedFilters).length;
 
   return (
     <div className="animate-fade-in">
@@ -39,23 +56,21 @@ function Employees() {
         title="قاعدة بيانات الموظفين"
         desc="يمكنك استعراض بيانات الموظفين والبحث المتقدم عبر الفلاتر التخصصية"
         onToggleFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        activeFiltersCount={activeFiltersCount}
       />
 
       <AdvancedFilters
         show={showAdvancedFilters}
-        onCancel={() => setShowAdvancedFilters(false)}
-        onApply={(filters) => {
-          console.log("Applying filters:", filters);
-          // Add filter logic here if needed
-          setShowAdvancedFilters(false);
-        }}
+        onCancel={handleCancelFilters}
+        onApply={handleApplyFilters}
+        onHide={() => setShowAdvancedFilters(false)}
       />
 
       <EmployeesFilters
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => {
           setPageSize(newPageSize);
-          setPage(1); // Reset to first page when page size changes
+          setPage(1);
         }}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}

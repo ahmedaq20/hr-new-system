@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config/api";
 import { useAuthStore } from "../store/useAuthStore";
+import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import "./Login.css";
 
 function Login() {
@@ -12,6 +13,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,101 +70,142 @@ function Login() {
   };
 
   return (
-    <div className="split-admin-login-page" dir="rtl">
+    <div className="admin-login-page" dir="rtl">
       <Container fluid className="p-0">
         <Row className="m-0 min-vh-100">
-          
-          {/* Right Side - Branding Overlay */}
-          <Col xs={12} lg={7} className="split-admin-login-right d-none d-lg-flex p-0">
-            <div className="split-admin-login-overlay"></div>
-            <div className="split-admin-login-right-content px-5">
-              <h3 className="mb-3 text-info opacity-75">وزارة الاقتصاد الوطني</h3>
-              <h1 className="fw-bold mb-4" style={{ fontSize: '3rem', lineHeight: '1.4' }}>
-                نظام إدارة معلومات الموظفين<br />الإداري والمالي
-              </h1>
-              <p className="fs-5 opacity-75 lh-lg" style={{ maxWidth: '90%' }}>
-                المنصة المركزية لإدارة الموارد البشرية والشؤون المالية، توفر أدوات متكاملة لإدارة البيانات والتقارير والعمليات الإدارية بكفاءة عالية.
-              </p>
+
+          {/* Right Side - Illustration Panel */}
+          <Col xs={12} lg={7} className="admin-login-illustration d-none d-lg-flex">
+            <div className="illustration-content">
+              <h2 className="illustration-title">نظام إدارة الموارد</h2>
+              <p className="illustration-subtitle">حل متكامل لإدارة البيانات</p>
+
+              <div className="hero-image-wrapper">
+                <img
+                  src="/images/hero-right.png"
+                  alt="نظام إدارة الموارد"
+                  className="hero-image"
+                />
+              </div>
             </div>
           </Col>
 
           {/* Left Side - Login Form */}
-          <Col xs={12} lg={5} className="split-admin-login-left">
-            <div className="split-admin-login-form-container text-right">
-              
-              {/* Centered Logo */}
-              <div className="text-center mb-4">
-                <img
-                  src="/images/logo222.png"
-                  alt="Ministry Logo"
-                  className="img-fluid"
-                  style={{ maxWidth: '120px' }}
-                />
+          <Col xs={12} lg={5} className="admin-login-form-col">
+            <div className="admin-login-form-wrapper">
+
+              {/* Nexar Logo */}
+              <div className="login-logo">
+                <div className="nexar-logo-container">
+                  <div className="nexar-icon">
+                    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="44" height="44" rx="10" fill="#2B7DE9" />
+                      <path d="M12 32V12h4.5l11 14.5V12H32v20h-4.5L16.5 17.5V32H12z" fill="#fff" />
+                    </svg>
+                  </div>
+                  <span className="nexar-text">nexar</span>
+                </div>
               </div>
 
-              <div className="text-center text-lg-end mb-4">
-                <h2 className="split-admin-login-title">تسجيل دخول المسؤول</h2>
-                <p className="split-admin-login-subtitle">
-                  كافة الحقول مطلوبة للمتابعة.
+              {/* Welcome Text */}
+              <div className="login-welcome">
+                <h1 className="welcome-title">مرحبًا بك</h1>
+                <p className="welcome-subtitle">
+                  سجل دخولك للوصول إلي نظام لإدارة الموارد
+                </p>
+                <p className="welcome-subtitle-en">
+                  Resource Management System
                 </p>
               </div>
 
+              {/* Error Alert */}
               {error && (
-                <div className="alert alert-danger py-2 mb-4 small text-center rounded-3">
+                <div className="alert alert-danger py-2 mb-3 small text-center rounded-3">
                   {error}
                 </div>
               )}
 
+              {/* Login Form */}
               <Form onSubmit={handleLogin}>
-                <Form.Group className="mb-4">
-                  <Form.Label className="admin-split-label">رقم الهوية الوطنية</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="أدخل رقم الهوية"
-                    maxLength={9}
-                    value={nationalId}
-                    onChange={(e) => setNationalId(e.target.value)}
-                    className="admin-split-input text-end"
-                    dir="ltr"
-                  />
+                <Form.Group className="mb-3">
+                  <Form.Label className="form-field-label">اسم المستخدم</Form.Label>
+                  <div className="input-icon-wrapper">
+                    <FiUser className="input-icon" />
+                    <Form.Control
+                      type="text"
+                      placeholder="أدخل اسم المستخدم"
+                      maxLength={9}
+                      value={nationalId}
+                      onChange={(e) => setNationalId(e.target.value)}
+                      className="login-input"
+                    />
+                  </div>
                 </Form.Group>
 
-                <Form.Group className="mb-4">
-                  <Form.Label className="admin-split-label">كلمة المرور</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="أدخل كلمة المرور"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="admin-split-input text-end"
-                    dir="ltr"
-                  />
+                <Form.Group className="mb-3">
+                  <Form.Label className="form-field-label">كلمة المرور</Form.Label>
+                  <div className="input-icon-wrapper">
+                    <FiLock className="input-icon" />
+                    <Form.Control
+                      type={showPassword ? "text" : "password"}
+                      placeholder="أدخل كلمة المرور"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="login-input"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <FiEyeOff /> : <FiEye />}
+                    </button>
+                  </div>
                 </Form.Group>
 
-                <div className="d-flex justify-content-between align-items-center mb-5 mt-2">
-                  <Form.Check 
-                    type="checkbox" 
-                    id="admin-remember-me" 
+                <div className="remember-forgot-row">
+                  <Form.Check
+                    type="checkbox"
+                    id="admin-remember-me"
                     label="تذكرني"
-                    className="small text-muted"
+                    className="remember-check"
                   />
-                  <span className="cursor-pointer small" style={{ color: '#002F6C', fontWeight: '600' }}>
-                    هل نسيت كلمة المرور؟
-                  </span>
+                  <a href="#" className="forgot-password-link" onClick={(e) => e.preventDefault()}>
+                    نسيت كلمة المرور؟
+                  </a>
                 </div>
 
                 <Button
                   type="submit"
-                  className="btn-admin-login w-100"
+                  className="login-submit-btn w-100"
                   disabled={loading}
                 >
                   {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                 </Button>
               </Form>
 
-              <p className="text-center mt-5 small text-muted opacity-50">
-                جميع الحقوق محفوظة لدى وزارة الاقتصاد الوطني الفلسطيني
+              {/* Divider */}
+              <div className="login-divider">
+                <span>أو</span>
+              </div>
+
+              {/* Microsoft Login Button (placeholder) */}
+              <button type="button" className="microsoft-login-btn">
+                <svg className="microsoft-logo" viewBox="0 0 21 21" width="21" height="21">
+                  <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                  <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                  <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                </svg>
+                <span>تسجيل الدخول باستخدام Microsoft</span>
+              </button>
+
+              {/* Copyright */}
+              <p className="login-copyright">
+                © 2026 nexar. جميع الحقوق محفوظة.
               </p>
+
             </div>
           </Col>
 
